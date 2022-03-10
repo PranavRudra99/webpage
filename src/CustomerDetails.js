@@ -9,20 +9,21 @@ export default class CustomerDetails extends Component {
     super(props);
     this.state = {
       showAlbums: false,
-      showPost: false,
+      showUpdatePost: false,
       showComment: false,
       commentStrName: '',
       commentStrBody: '',
       searchStr: '',
       postTitle: '',
       postContent: '',
-      allPosts: [],   
+      allPosts: [],
     }
     this.selectedPostId = 0;
     this.selectedIndex = 0;
     this.handleCloseComment = this.handleCloseComment.bind(this);
     this.handleClosePost = this.handleClosePost.bind(this);
     this.updatePost = this.updatePost.bind(this);
+    
   }
   
   
@@ -113,6 +114,7 @@ export default class CustomerDetails extends Component {
         let arr3 = [...this.state.postComments];
         arr3 = arr3.filter(function(value, index, arr){ return index!=ind;});
         this.setState({customerPosts: [...arr1], showPostComments: [...arr2], postComments: [...arr3]})
+        // console.log(this.state.customerPosts)
       }
     });
   }
@@ -188,7 +190,7 @@ export default class CustomerDetails extends Component {
     fetch('https://jsonplaceholder.typicode.com/posts/1', {
       method: 'PUT',
       body: JSON.stringify({
-        id: this.state.selectedPostId,
+        id: this.selectedPostId,
         title: this.state.postTitle,
         body: this.state.postContent,
         userId: this.state.userId,
@@ -199,7 +201,26 @@ export default class CustomerDetails extends Component {
     })
     .then((response) => response.json())
     .then((json) => {
-      console.log(json);
+      let allPosts = this.state.allPosts;
+      allPosts.forEach(post => {
+        if(post.id == this.selectedPostId) {
+          post.title = this.state.postTitle;
+          post.body = this.state.postContent;
+        }
+      })
+      this.setState({allPosts: allPosts});
+
+      let customerPosts = this.state.customerPosts;
+      customerPosts.forEach(post => {
+        if(post.id == this.selectedPostId) {
+          console.log(post);
+          console.log("Changed Post data " + this.state.selectedPostId);
+          post.title = this.state.postTitle;
+          post.body = this.state.postContent;
+        }
+      });
+      this.setState({customerPosts: customerPosts});
+
       this.setState({showUpdatePost: false});
     });
   }
@@ -240,6 +261,7 @@ export default class CustomerDetails extends Component {
         <Panel.Heading>
           <Panel.Title componentClass="h3" onClick={() => {this.clickShowPosts({})}}>Posts</Panel.Title>
         </Panel.Heading>
+        
         {this.state.showPost == true ?<Panel.Body>
           <input value={this.state.searchStr} onChange={e => this.updateSearchStr(e)} placeholder="Insert search"></input>
           {this.state.customerPosts? 
@@ -311,18 +333,19 @@ export default class CustomerDetails extends Component {
           </Button>
         </Modal.Footer>
       </Modal>
+
       <Modal show={this.state.showUpdatePost} onHide={this.handleClosePost}>
         <Modal.Header closeButton>
           <Modal.Title>Update Post</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div class="row">
-            <label class="col-md-2">Title: </label>
-            <input class="col-md-8" value={this.state.postTitle} onChange={e => this.updatePostTitle(e)}></input>
+          <div className="row">
+            <label className="col-md-2">Title: </label>
+            <input className="col-md-8" value={this.state.postTitle} onChange={e => this.updatePostTitle(e)}></input>
           </div>
-          <div class="row mt-10" style={{"margin-top": "10px"}}>
-            <label class="col-md-2">Body: </label>
-            <input class="col-md-8" value={this.state.postContent} onChange={e => this.updatePostContent(e)}></input>
+          <div className="row mt-10" style={{"marginTop": "10px"}}>
+            <label className="col-md-2">Body: </label>
+            <input className="col-md-8" value={this.state.postContent} onChange={e => this.updatePostContent(e)}></input>
           </div>
           
         </Modal.Body>

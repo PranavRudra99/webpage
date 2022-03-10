@@ -86,15 +86,15 @@ export default class CustomerDetails extends Component {
     });
   }
 
-  deletePost(postId, index){
+  deletePost(postId, ind){
     axios.delete('https://jsonplaceholder.typicode.com/posts/' + postId).then(response => {
       if(response.status === 200){
         let arr1 = [...this.state.customerPosts];
-        arr1.splice(index, 1);
+        arr1.splice(ind, 1);
         let arr2 = [...this.state.showPostComments];
-        arr2.splice(index, 1);
+        arr2.splice(ind, 1);
         let arr3 = [...this.state.postComments];
-        console.log(this.state.postComments)
+        arr3 = arr3.filter(function(value, index, arr){ return index!=ind;});
         this.setState({customerPosts: [...arr1], showPostComments: [...arr2], postComments: [...arr3]})
         // console.log(this.state.customerPosts)
       }

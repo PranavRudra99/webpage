@@ -53,10 +53,12 @@ export default class CustomerDetails extends Component {
     axios.get('https://jsonplaceholder.typicode.com/albums?userId=' + id).then(response => {
       this.setState({customerAlbums: response})
       let flags = [];
+      let images = [];
       for(let i =0; i < response.data.length; i++){
         flags[i]=false;
+        images[i] = {};
       }
-      this.setState({showAlbumImages: flags})
+      this.setState({showAlbumImages: flags, albumImages:images})
     })
   };
 
@@ -85,10 +87,11 @@ export default class CustomerDetails extends Component {
 
   showDetailAlbums(albumId, index) {
     axios.get('https://jsonplaceholder.typicode.com/photos?albumId=' + albumId).then(response => {
-      this.setState({albumImages: response})
-      let arr = [...this.state.showAlbumImages]
-      arr[index] = !this.state.showAlbumImages[index]
-      this.setState({showAlbumImages: [...arr]})
+      let arr1 = [...this.state.showAlbumImages]
+      arr1[index] = !this.state.showAlbumImages[index]
+      let arr2 = [... this.state.albumImages];
+      arr2[index] = response;
+      this.setState({showAlbumImages: [...arr1], albumImages: [...arr2]})
     })
   }
 
@@ -305,8 +308,8 @@ export default class CustomerDetails extends Component {
                 <div onClick={() => {this.showDetailAlbums(album.id,index)}}>{album.title}</div>
                 <Panel bsStyle="info" className="centeralign">
                   {this.state.showAlbumImages[index] === true ?<Panel.Body>
-                  {this.state.albumImages?
-                  this.state.albumImages.data.map(albumImage =>
+                  {this.state.albumImages[index]?
+                  this.state.albumImages[index].data.map(albumImage =>
                   <div key={albumImage.id} className="flex-row">
                     <img src={albumImage.thumbnailUrl} alt="Image"/>
                   </div>)

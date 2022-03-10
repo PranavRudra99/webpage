@@ -1,0 +1,34 @@
+.addmargin {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.centeralign {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.popup-content {
+  background-color: #292d3e;
+  border: 1px solid #464545;
+  color: #fff;
+}
+.popup-content {
+  border-radius: 5px;
+  box-shadow: 0 0 3px rgb(0 0 0 / 16%);
+  width: 200px;
+}
+.popup-content {
+  border-radius: 5px;
+  padding: 0.5rem;
+  -webkit-animation: .3s cubic-bezier(.38,.1,.36,.9) forwards a;
+}
+.popup-content {
+  margin: auto;
+}

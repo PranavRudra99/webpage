@@ -99,7 +99,6 @@ export default class CustomerDetails extends Component {
         arr1[index] = !this.state.showPostComments[index]
         let arr2 = [... this.state.postComments]
         arr2[index] = response;
-        console.log(this.state.postComments)
         this.setState({showPostComments:arr1, postComments:arr2})
     });
   }
@@ -120,7 +119,7 @@ export default class CustomerDetails extends Component {
   }
 
   showCreateComment(postId, index) {
-    // console.log(postId);
+    console.log(postId + ":" + index);
     this.selectedIndex = index
     this.selectedPostId = postId;
     this.setState({showComment: true});
@@ -137,7 +136,12 @@ export default class CustomerDetails extends Component {
       email: this.state.customerDetails.data.email
     }).then(
       response =>{
-        
+        let arr2 = [... this.state.postComments];
+        if(!arr2[this.selectedIndex].data) {
+          arr2[this.selectedIndex].data = [];
+        }
+        arr2[this.selectedIndex].data.push(response.data);
+        this.setState({postComments:arr2});
       });
     this.setState({showComment: false, commentStrName:'', commentStrBody:''});
   }
@@ -272,7 +276,7 @@ export default class CustomerDetails extends Component {
                     {/* <button className='btn btn-primary' onClick={() => {this.updatePost(post.id)}}>Update Post</button> */}
                     <button className='btn btn-primary' onClick={() => {this.deletePost(post.id, index)}}>Delete Post</button>
                     <button className='btn btn-primary' onClick={() => {this.showUpdatePost(post.id)}}>Update Post</button>
-                    <button className='btn btn-primary' onClick={() => {this.showCreateComment(post.id)}}>Add Comment</button>
+                    <button className='btn btn-primary' onClick={() => {this.showCreateComment(post.id, index)}}>Add Comment</button>
                   </div>
                   
                   <Panel bsStyle="info" className="centeralign">

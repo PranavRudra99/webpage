@@ -9,20 +9,19 @@ export default class CustomerDetails extends Component {
     super(props);
     this.state = {
       showAlbums: false,
-      showPost: false,
+      showUpdatePost: false,
       showComment: false,
-      commentStrName: '',
-      commentStrBody: '',
+      commentStr: '',
       searchStr: '',
       postTitle: '',
       postContent: '',
-      allPosts: [],   
+      allPosts: [],
     }
     this.selectedPostId = 0;
-    this.selectedIndex = 0;
     this.handleCloseComment = this.handleCloseComment.bind(this);
     this.handleClosePost = this.handleClosePost.bind(this);
     this.updatePost = this.updatePost.bind(this);
+    
   }
   
   
@@ -98,7 +97,6 @@ export default class CustomerDetails extends Component {
         arr1[index] = !this.state.showPostComments[index]
         let arr2 = [... this.state.postComments]
         arr2[index] = response;
-        console.log(this.state.postComments)
         this.setState({showPostComments:arr1, postComments:arr2})
     });
   }
@@ -113,13 +111,13 @@ export default class CustomerDetails extends Component {
         let arr3 = [...this.state.postComments];
         arr3 = arr3.filter(function(value, index, arr){ return index!=ind;});
         this.setState({customerPosts: [...arr1], showPostComments: [...arr2], postComments: [...arr3]})
+        // console.log(this.state.customerPosts)
       }
     });
   }
 
-  showCreateComment(postId, index) {
-    // console.log(postId);
-    this.selectedIndex = index
+  showCreateComment(postId) {
+    console.log(postId);
     this.selectedPostId = postId;
     this.setState({showComment: true});
   }
@@ -129,23 +127,12 @@ export default class CustomerDetails extends Component {
   }
 
   addComment() {
-    axios.post('https://jsonplaceholder.typicode.com/posts/'+this.selectedPostId+'/comments', {
-      name: this.state.commentStrName,
-      body: this.state.commentStrBody,
-      email: this.state.customerDetails.data.email
-    }).then(
-      response =>{
-        
-      });
-    this.setState({showComment: false, commentStrName:'', commentStrBody:''});
+    
   }
 
-  updateCommentStrName(e) {
-    this.setState({commentStrName: e.target.value})
-  }
-  
-  updateCommentStrBody(e) {
-    this.setState({commentStrBody: e.target.value})
+  updateCommentStr(e) {
+    console.log(e);
+    this.setState({commentStr: e.target.value})
   }
 
   checkContainStr(body, search) {
@@ -240,6 +227,7 @@ export default class CustomerDetails extends Component {
         <Panel.Heading>
           <Panel.Title componentClass="h3" onClick={() => {this.clickShowPosts({})}}>Posts</Panel.Title>
         </Panel.Heading>
+        
         {this.state.showPost == true ?<Panel.Body>
           <input value={this.state.searchStr} onChange={e => this.updateSearchStr(e)} placeholder="Insert search"></input>
           {this.state.customerPosts? 
@@ -293,24 +281,23 @@ export default class CustomerDetails extends Component {
         </Panel.Body>: ''}
       </Panel>
 
-      <Modal show={this.state.showComment} onHide={()=>{this.handleCloseComment()}}>
+      <Modal show={this.state.showComment} onHide={this.handleCloseComment}>
         <Modal.Header closeButton>
           <Modal.Title>Create Comment</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>Comment Name</p><input value={this.state.commentStrName} onChange={e => this.updateCommentStrName(e)}></input>
-          <br/>
-          <p>Comment Body</p><input value={this.state.commentStrBody} onChange={e => this.updateCommentStrBody(e)}></input>
+          <input value={this.state.commentStr} onChange={e => this.updateCommentStr(e)}></input>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={()=>{this.handleCloseComment()}}>
+          <Button variant="secondary" onClick={this.handleCloseComment}>
             Close
           </Button>
-          <Button variant="primary" onClick={()=>{this.addComment()}}>
+          <Button variant="primary" onClick={this.addComment}>
             Create
           </Button>
         </Modal.Footer>
       </Modal>
+
       <Modal show={this.state.showUpdatePost} onHide={this.handleClosePost}>
         <Modal.Header closeButton>
           <Modal.Title>Update Post</Modal.Title>

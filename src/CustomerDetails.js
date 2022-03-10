@@ -8,7 +8,7 @@ export default class CustomerDetails extends Component {
     super(props);
     this.state = {
       showAlbums: false,
-      showPost: false
+      showPost: false,
     }
   }
 
@@ -42,6 +42,11 @@ export default class CustomerDetails extends Component {
   getPosts(id) {
     axios.get('https://jsonplaceholder.typicode.com/posts?userId=' + id).then(response => {
       this.setState({customerPosts: response})
+      let flags = [];
+      for(let i =0; i < response.data.length; i++){
+        flags[i]=false;
+      }
+    this.setState({showAlbumImages: flags})
     });
   };
 
@@ -53,9 +58,12 @@ export default class CustomerDetails extends Component {
     this.setState({showPost: !this.state.showPost});
   }
 
-  showDetailAlbums(id) {
-    axios.get('https://jsonplaceholder.typicode.com/photos?albumId=' + id).then(response => {
-      console.log(response);
+  showDetailAlbums(albumId, index) {
+    axios.get('https://jsonplaceholder.typicode.com/photos?albumId=' + albumId).then(response => {
+      this.setState({albumImages: response})
+      let arr = [...this.state.showAlbumImages]
+      arr[index] = !this.state.showAlbumImages[index]
+      this.setState({showAlbumImages: [...arr]})
     })
   } 
 
@@ -101,11 +109,35 @@ export default class CustomerDetails extends Component {
         </Panel.Heading>
         {this.state.showAlbums == true ?<Panel.Body>
           {this.state.customerAlbums? 
-            this.state.customerAlbums.data.map(album => 
-              <div key={album.id} onClick={() => {this.showDetailAlbums(album.id)}}>{album.title}</div>)
+            this.state.customerAlbums.data.map((album,index) => 
+              <div key={album.id}>
+                <div onClick={() => {this.showDetailAlbums(album.id,index)}}>{album.title}</div>
+                <Panel bsStyle="info" className="centeralign">
+                  {this.state.showAlbumImages[index] === true ?<Panel.Body>
+                  {this.state.albumImages?
+                  this.state.albumImages.data.map(albumImage =>
+                  <div key={albumImage.id} className="flex-row">
+                    <img src={albumImage.thumbnailUrl} alt="Image"/>
+                  </div>)
+                  : ''}
+                  </Panel.Body>: ''}
+                </Panel>
+              </div>
+              )
           : ''}
         </Panel.Body>: ''}
       </Panel>
+
+      {/* <Panel bsStyle="info" className="centeralign">
+        {this.state.showAlbumImages == true ?<Panel.Body>
+          {this.state.albumImages?
+            this.state.albumImages.data.map(albumImage =>
+              <div key={albumImage.id} className="flex-row">
+                  <img src={albumImage.thumbnailUrl} alt="Image"/>
+              </div>)
+          : ''}
+        </Panel.Body>: ''}
+      </Panel> */}
     </div>)
   }
 }

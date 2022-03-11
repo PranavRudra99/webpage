@@ -116,13 +116,11 @@ export default class CustomerDetails extends Component {
         let arr3 = [...this.state.postComments];
         arr3 = arr3.filter(function(value, index, arr){ return index!=ind;});
         this.setState({customerPosts: [...arr1], showPostComments: [...arr2], postComments: [...arr3]})
-        // console.log(this.state.customerPosts)
       }
     });
   }
 
   showCreateComment(postId, index) {
-    console.log(postId + ":" + index);
     this.selectedIndex = index
     this.selectedPostId = postId;
     this.setState({showComment: true});
@@ -159,7 +157,6 @@ export default class CustomerDetails extends Component {
 
   checkContainStr(body, search) {
     let result = body.includes(search);
-    console.log(body + ":" + search + ":" + result);
     return result;
   }
 
@@ -167,7 +164,7 @@ export default class CustomerDetails extends Component {
     this.setState({searchStr: e.target.value});
     let customerPosts = [];
     this.state.allPosts.forEach(post => {
-      if(this.checkContainStr(post.body, e.target.value)) {
+      if(this.checkContainStr(post.title, e.target.value)) {
         customerPosts.push(post);
       }
     });
@@ -220,7 +217,6 @@ export default class CustomerDetails extends Component {
       let customerPosts = this.state.customerPosts;
       customerPosts.forEach(post => {
         if(post.id == this.selectedPostId) {
-          console.log(post);
           console.log("Changed Post data " + this.state.selectedPostId);
           post.title = this.state.postTitle;
           post.body = this.state.postContent;
@@ -277,9 +273,10 @@ export default class CustomerDetails extends Component {
                   <div>
                     <Panel.Body onClick={() => {this.showComments(post.id,index)}}>{post.title}</Panel.Body>
                     {/* <button className='btn btn-primary' onClick={() => {this.updatePost(post.id)}}>Update Post</button> */}
-                    <button className='btn btn-primary' onClick={() => {this.deletePost(post.id, index)}}>Delete Post</button>
-                    <button className='btn btn-primary' onClick={() => {this.showUpdatePost(post.id)}}>Update Post</button>
-                    <button className='btn btn-primary' onClick={() => {this.showCreateComment(post.id, index)}}>Add Comment</button>
+
+                    <button className='btn btn-primary margin-10' onClick={() => {this.deletePost(post.id, index)}}>Delete Post</button>
+                    <button className='btn btn-primary margin-10' onClick={() => {this.showUpdatePost(post.id)}}>Update Post</button>
+                    <button className='btn btn-primary margin-10' onClick={() => {this.showCreateComment(post.id, index)}}>Add Comment</button>
                   </div>
                   
                   <Panel bsStyle="info" className="centeralign">
